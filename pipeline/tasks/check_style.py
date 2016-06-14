@@ -3,14 +3,17 @@ import sys
 sys.path.append('../..')
 from base import BaseTask
 from github import statuses
-import time
+import time,os,subprocess
 
 class CheckStyle(BaseTask):
+    work_dir = '/home/work'
+    user_dir = None
+    repo_dir = None
+    diff_log = None
     def do_task(self) :
         self.change_status('pending', '正在进行编码格式检查...')
-        for i in range(1, 30):
-            print 'sleep'
-            time.sleep(1)
+        self.get_diff()
+        print "diffed"
         self.change_status('success', '编码格式检查通过')
 
 
@@ -18,6 +21,61 @@ class CheckStyle(BaseTask):
         user = self.params['user']
         repo = self.params['repo']
         ref = self.params['sha']
-        print statuses.create(user, repo, ref, 'style check', status, 'http://jswh.me', description)
+        statuses.create(user, repo, ref, 'style check', status, 'http://jswh.me', description)
 
-    def 
+    def get_diff(self):
+        if ():
+            print "repo exist"
+        else:
+            self.init_repo()
+        print 'diffing'
+        command = '/home/jswh/.composer/vendor/bin/php-cs-fixer fix ' + self.get_repo_dir()
+        os.system(command + ' --diff > ' + self.get_log_dir() + '/diff.log')
+
+    def init_repo(self):
+        self.check_dir()
+        if (not os.path.exists(self.get_repo_dir() + '/.git')):
+            clone = 'git clone -b' + sel.params['branch'] + ' ' + self.params['git_url'] + ' ' + self.get_repo_dir()
+            print "print init repo"
+            os.system(clone)
+        self.reset_repo()
+        pull = 'cd ' + self.get_repo_dir() + ' && git pull origin ' + self.params['branch']
+        os.system(pull)
+
+
+    def reset_repo(self):
+        print 'resetting repo'
+        resset = 'cd ' + self.get_repo_dir() + ' && git reset --hard'
+        os.system(resset)
+
+    def check_dir(self):
+        if (not os.path.exists(self.get_repo_dir())):
+            os.makedirs(self.get_repo_dir())
+        if (not os.path.exists(self.get_log_dir())):
+            os.makedirs(self.get_log_dir())
+
+    def get_user_dir(self):
+        if (not self.user_dir):
+            self.user_dir = self.work_dir + '/' + self.params['repo_fullname'].split('/')[0]
+        return self.user_dir
+
+    def get_repo_dir(self):
+        if (not self.repo_dir):
+            self.repo_dir = self.work_dir + '/' + self.params['repo_fullname'] + '/' + self.params['branch']
+        return self.repo_dir
+
+    def get_log_dir(self):
+        if (not self.diff_log):
+            self.diff_log = '/tmp/' + self.params['repo_fullname'] + '/' + self.params['branch']
+        return self.diff_log
+
+if __name__ == '__main__':
+    task = CheckStyle()
+    task.set_params({
+        'user':'jswh',
+        'repo':'OrosOlymPos',
+        'sha':'7b81047e18ded3722a75a38e43624cca2e2fc213',
+        'git_url':'git@github.com:jswh/OrosOlymPos.git',
+        'repo_fullname':'jswh/OrosOlymPos'
+        })
+    print task.get_diff()

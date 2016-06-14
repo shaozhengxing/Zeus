@@ -1,9 +1,9 @@
 #-*- coding:utf-8 -*-
 import json
-events = {
+events = [
     'pull_request.reopen',
     'pull_request.opened'
-    }
+    ]
 
 class EventHandler():
     handlers = None
@@ -24,12 +24,18 @@ class EventHandler():
     def get_event(self, data):
         for valid_event in events:
             parts = valid_event.split('.');
-            print parts
             if (parts[0] in data) and (parts[1] == data['action']):
                 return valid_event
 
+    def can_handle(self, data):
+        event_name = self.get_event(json.loads(data))
+        if (self.handlers and (event_name in self.handlers)):
+            return True
+        else:
+            return False
+
 
     def default_hanlder(self, data):
-        print 'default_hanlder'
+        print "no handler for this data, current handlers"
         print self.handlers
 
