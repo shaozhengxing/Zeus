@@ -11,17 +11,18 @@ class CheckStyle(BaseTask):
     repo_dir = None
     diff_log = None
     def do_task(self) :
-        self.change_status('pending', '正在进行编码格式检查...')
-        self.get_diff()
+        self.change_status('pending', '正在进行编码格式检查...', None)
+        diff_file = self.get_diff()
         print "diffed"
-        self.change_status('success', '编码格式检查通过')
+        self.change_status('success', '编码格式检查通过', 'http://hk.jswh.me/diff' + diff_file )
 
 
-    def change_status(self, status, description):
+    def change_status(self, status, description, link):
+        print link
         user = self.params['user']
         repo = self.params['repo']
         ref = self.params['sha']
-        statuses.create(user, repo, ref, 'style check', status, 'http://jswh.me', description)
+        statuses.create(user, repo, ref, 'style check', status, link, description)
 
     def get_diff(self):
         if ():
@@ -29,8 +30,12 @@ class CheckStyle(BaseTask):
         else:
             self.init_repo()
         print 'diffing'
-        command = '/home/jswh/.composer/vendor/bin/php-cs-fixer fix ' + self.get_repo_dir()
-        os.system(command + ' --diff > ' + self.get_log_dir() + '/diff.log')
+        fix = '/home/jswh/.composer/vendor/bin/php-cs-fixer fix ' + self.get_repo_dir()
+        os.system(fix)
+        diff_file = self.get_log_dir() + '/diff.log';
+        diff = 'cd ' + self.get_repo_dir() + ' && git diff | /home/jswh/ansi2html.sh > ' + diff_file
+        os.system(diff)
+        return diff_file
 
     def init_repo(self):
         self.check_dir()

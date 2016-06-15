@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
-from flask import Flask, request
-
+from flask import Flask, request, abort
+import os
 app = Flask(__name__)
 data_queue = None
 
@@ -15,7 +15,16 @@ def webhook():
     else:
         print data_queue
     return "hello world!"
-
+@app.route('/diff/tmp/<user>/<repo>/<branch>/<filename>')
+@app.route('/diff/<user>/<repo>/<branch>/<filename>')
+def get_diff(user, repo, branch, filename):
+    diff_file = '/tmp/' + user + '/' + repo + '/' + branch + '/' + filename
+    if (os.path.exists(diff_file)):
+        f = open(diff_file, 'r')
+        diff_data = f.read()
+        return diff_data
+    else:
+        abort(404)
 def get_web_app():
     return app
 
