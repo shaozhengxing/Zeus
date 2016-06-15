@@ -19,11 +19,15 @@ def webhook():
 @app.route('/diff/<user>/<repo>/<branch>/<filename>')
 def get_diff(user, repo, branch, filename):
     diff_file = '/tmp/' + user + '/' + repo + '/' + branch + '/' + filename
+    color = {'-':'red', '+':'#05dc05'}
     if (os.path.exists(diff_file)):
         f = open(diff_file, 'r')
-        diff_data = f.read()
+        diff_data = ''
+        for line in f:
+            if (line[0] == '-' or line[0] == '+'):
+                diff_data = diff_data + '<pre style="color:' + color[line[0]] + '">' + line + '</pre>'
         f.close()
-        return '<pre>' + diff_data + '</pre>'
+        return '<html><head><title>diff</title></head><body>' + diff_data + '</body></html>'
     else:
         abort(404)
 def get_web_app():
