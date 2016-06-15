@@ -33,7 +33,7 @@ class CheckStyle(BaseTask):
         else:
             self.init_repo()
         print 'diffing'
-        fix = '/home/jswh/.composer/vendor/bin/php-cs-fixer fix ' + self.get_repo_dir()
+        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix ' + self.get_repo_dir()
         os.system(fix)
         diff_file = self.get_log_dir() + '/diff.log';
         diff = 'cd ' + self.get_repo_dir() + ' && git diff | cat > ' + diff_file
@@ -43,7 +43,7 @@ class CheckStyle(BaseTask):
     def init_repo(self):
         self.check_dir()
         if (not os.path.exists(self.get_repo_dir() + '/.git')):
-            clone = 'git clone -b' + sel.params['branch'] + ' ' + self.params['git_url'] + ' ' + self.get_repo_dir()
+            clone = 'git clone -b' + self.params['branch'] + ' ' + self.params['git_url'] + ' ' + self.get_repo_dir()
             print "print init repo"
             os.system(clone)
         self.reset_repo()

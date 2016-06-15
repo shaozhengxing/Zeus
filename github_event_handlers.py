@@ -4,8 +4,6 @@ sys.path.append('..')
 from github import events, statuses
 from pipeline import Factory, tasks
 from multiprocessing import Process
-user = 'jswh'
-repo = 'OrosOlymPos'
 
 handler = events.EventHandler()
 
@@ -16,6 +14,9 @@ def get_handler():
     return handler
 
 def pr_open(data):
+    print "action: pull_request." + data['action']
+    user = data['repository']['owner']['login']
+    repo = data['repository']['name']
     ref = data['pull_request']['head']['sha']
     git_url = data['pull_request']['head']['repo']['ssh_url']
     fullname = data['pull_request']['head']['repo']['full_name']
@@ -26,3 +27,5 @@ def pr_open(data):
     line.run()
 
 handler.set_handler('pull_request.opened', pr_open)
+handler.set_handler('pull_request.reopened', pr_open)
+

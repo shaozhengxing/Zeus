@@ -11,7 +11,7 @@ data_queue = Queue()
 set_data_queue(data_queue)
 
 def run_web():
-    get_web_app().run(host='0.0.0.0', port=80)
+    get_web_app().run(host='0.0.0.0', port=80, threaded=True)
 
 web_process = Process(target=run_web)
 web_process.start()
@@ -48,6 +48,11 @@ def main():
                 print 'process {} ended'.format(end_proc.pid)
                 end_proc.join()
         time.sleep(0.3)
+        if (not web_process.is_alive()):
+            print "webserver stop, restarting"
+            web_process.terminate()
+            web_process.join()
+            web_process.start()
 
 if __name__ == "__main__":
     main()

@@ -2,7 +2,8 @@
 import json,os
 events = [
     'pull_request.reopen',
-    'pull_request.opened'
+    'pull_request.opened',
+    'pull_request.reopened',
     ]
 
 class EventHandler():
