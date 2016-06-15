@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-import json
+import json,os
 events = [
     'pull_request.reopen',
     'pull_request.opened'
@@ -7,14 +7,17 @@ events = [
 
 class EventHandler():
     handlers = None
-    def handle(self, payload):
+    def handle(self, payload, queue=None):
         data = json.loads(payload)
         event_name = self.get_event(data)
         if event_name in self.handlers:
             handler = self.handlers[event_name]
-            return handler(data)
+            result = handler(data)
         else:
-            self.default_hanlder(data)
+            result = self.default_hanlder(data)
+        if (queue):
+            queue.put({'type':'exit', 'pid':os.getpid(), 'handle_result':result})
+
 
     def set_handler(self, event_name, handler):
         if (not self.handlers):
