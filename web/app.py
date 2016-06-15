@@ -22,7 +22,8 @@ def get_diff(user, repo, branch, filename):
     if (os.path.exists(diff_file)):
         f = open(diff_file, 'r')
         diff_data = f.read()
-        return diff_data
+        f.close()
+        return '<pre>' + diff_data + '</pre>'
     else:
         abort(404)
 def get_web_app():

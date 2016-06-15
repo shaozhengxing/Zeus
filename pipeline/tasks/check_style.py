@@ -14,7 +14,10 @@ class CheckStyle(BaseTask):
         self.change_status('pending', '正在进行编码格式检查...', None)
         diff_file = self.get_diff()
         print "diffed"
-        self.change_status('success', '编码格式检查通过', 'http://hk.jswh.me/diff' + diff_file )
+        if (os.path.getsize(diff_file) == 0):
+            self.change_status('success', '编码格式检查通过', '' + diff_file )
+        else:
+            self.change_status('failure', '编码格式检查失败', 'http://hk.jswh.me/diff' + diff_file )
 
 
     def change_status(self, status, description, link):
@@ -33,7 +36,7 @@ class CheckStyle(BaseTask):
         fix = '/home/jswh/.composer/vendor/bin/php-cs-fixer fix ' + self.get_repo_dir()
         os.system(fix)
         diff_file = self.get_log_dir() + '/diff.log';
-        diff = 'cd ' + self.get_repo_dir() + ' && git diff | /home/jswh/ansi2html.sh > ' + diff_file
+        diff = 'cd ' + self.get_repo_dir() + ' && git diff | cat > ' + diff_file
         os.system(diff)
         return diff_file
 
