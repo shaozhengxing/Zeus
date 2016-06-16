@@ -15,8 +15,10 @@ class CheckStyle(BaseTask):
         diff_file = self.get_diff()
         print "diffed"
         if (os.path.getsize(diff_file) == 0):
-            self.change_status('success', '编码格式检查通过', '' + diff_file )
+            print 'diff success'
+            self.change_status('success', '编码格式检查通过', None)
         else:
+            print 'diff failure'
             self.change_status('failure', '编码格式检查失败', 'http://hk.jswh.me/diff' + diff_file )
 
 

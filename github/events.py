@@ -4,6 +4,8 @@ events = [
     'pull_request.reopen',
     'pull_request.opened',
     'pull_request.reopened',
+    'pull_request.synchronize',
+    'pull_request.edited'
     ]
 
 class EventHandler():

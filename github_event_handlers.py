@@ -28,4 +28,5 @@ def pr_open(data):
 
 handler.set_handler('pull_request.opened', pr_open)
 handler.set_handler('pull_request.reopened', pr_open)
-
+handler.set_handler('pull_request.synchronize', pr_open)
+handler.set_handler('pull_request.edited', pr_open)
