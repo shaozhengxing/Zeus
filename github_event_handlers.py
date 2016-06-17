@@ -21,7 +21,8 @@ def pr_open(data):
     git_url = data['pull_request']['head']['repo']['ssh_url']
     fullname = data['pull_request']['head']['repo']['full_name']
     branch = data['pull_request']['head']['ref']
-    params = {'user':user, 'repo':repo, 'sha':ref, 'git_url':git_url, 'repo_fullname':fullname, 'branch':branch}
+    pr_number = data['number']
+    params = {'user':user, 'repo':repo, 'sha':ref, 'git_url':git_url, 'repo_fullname':fullname, 'branch':branch, 'pr_number':pr_number}
 
     line = factory.make_pipeline([{'check_style':params}])
     line.run()

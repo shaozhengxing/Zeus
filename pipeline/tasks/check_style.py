@@ -2,7 +2,7 @@
 import sys
 sys.path.append('../..')
 from base import BaseTask
-from github import statuses
+from github import statuses,pull_request
 import time,os,subprocess
 
 class CheckStyle(BaseTask):
@@ -30,17 +30,21 @@ class CheckStyle(BaseTask):
         statuses.create(user, repo, ref, 'style check', status, link, description)
 
     def get_diff(self):
-        if ():
-            print "repo exist"
-        else:
-            self.init_repo()
+        self.init_repo()
         print 'diffing'
-        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix ' + self.get_repo_dir()
+        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix' + self.get_changed_files()
         os.system(fix)
         diff_file = self.get_log_dir() + '/diff.log';
         diff = 'cd ' + self.get_repo_dir() + ' && git diff | cat > ' + diff_file
         os.system(diff)
         return diff_file
+
+    def get_changed_files(self):
+        files = pull_request.list_files(self.params['user'], self.params['repo'], self.params['pr_number'])
+        file_list = ''
+        for item in files:
+            file_list = file_list + ' ' + self.get_repo_dir() + '/' + item['filename']
+        return file_list
 
     def init_repo(self):
         self.check_dir()
