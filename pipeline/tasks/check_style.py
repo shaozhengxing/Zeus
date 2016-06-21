@@ -3,7 +3,7 @@ import sys
 sys.path.append('../..')
 from base import BaseTask
 from github import statuses,pull_request
-import time,os,subprocess
+import time,os,subprocess,re
 
 class CheckStyle(BaseTask):
     work_dir = '/home/work'
@@ -14,7 +14,7 @@ class CheckStyle(BaseTask):
         self.change_status('pending', '正在进行编码格式检查...', None)
         diff_file = self.get_diff()
         print "diffed"
-        if (os.path.getsize(diff_file) == 0):
+        if (diff_file == False or os.path.getsize(diff_file) == 0):
             print 'diff success'
             self.change_status('success', '编码格式检查通过', None)
         else:
@@ -31,18 +31,24 @@ class CheckStyle(BaseTask):
 
     def get_diff(self):
         self.init_repo()
-        print 'diffing'
-        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix' + self.get_changed_files()
-        os.system(fix)
         diff_file = self.get_log_dir() + '/diff.log';
+        print 'diffing'
+        files = self.get_changed_files()
+        if (files == ''):
+            return False
+        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix --fixers=-concat_without_spaces,concat_with_spaces' + files
+        print fix
+        os.system(fix)
         diff = 'cd ' + self.get_repo_dir() + ' && git diff | cat > ' + diff_file
         os.system(diff)
         return diff_file
 
     def get_changed_files(self):
+        return ' ' + self.get_repo_dir()
         files = pull_request.list_files(self.params['user'], self.params['repo'], self.params['pr_number'])
         file_list = ''
         for item in files:
+            filename = item['filename']
             file_list = file_list + ' ' + self.get_repo_dir() + '/' + item['filename']
         return file_list
 
