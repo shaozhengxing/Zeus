@@ -34,22 +34,21 @@ class CheckStyle(BaseTask):
         diff_file = self.get_log_dir() + '/diff.log';
         print 'diffing'
         files = self.get_changed_files()
-        if (files == ''):
-            return False
-        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix --fixers=-concat_without_spaces,concat_with_spaces' + files
-        print fix
-        os.system(fix)
+        fix = 'php ' + os.path.abspath(os.path.dirname(__file__)) + '/../../tools/php-cs-fixer.phar fix --fixers=-concat_without_spaces,concat_with_spaces'
+        fix_all = ''
+        for file_path in files:
+            fix_all = fix_all + fix + ' ' + file_path + ';'
+        os.system(fix_all)
         diff = 'cd ' + self.get_repo_dir() + ' && git diff | cat > ' + diff_file
         os.system(diff)
         return diff_file
 
     def get_changed_files(self):
-        return ' ' + self.get_repo_dir()
         files = pull_request.list_files(self.params['user'], self.params['repo'], self.params['pr_number'])
-        file_list = ''
+        file_list = []
         for item in files:
             filename = item['filename']
-            file_list = file_list + ' ' + self.get_repo_dir() + '/' + item['filename']
+            file_list.append(self.get_repo_dir() + '/' + item['filename'])
         return file_list
 
     def init_repo(self):
