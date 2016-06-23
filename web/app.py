@@ -26,6 +26,8 @@ def get_diff(user, repo, branch, filename):
         for line in f:
             if (line[0] == '-' or line[0] == '+'):
                 diff_data = diff_data + '<pre style="color:' + color[line[0]] + '">' + line + '</pre>'
+            else:
+                diff_data = diff_data + '<pre style="color:#aaa">' + line + '</pre>'
         f.close()
         return '<html><head><title>diff</title></head><body>' + diff_data + '</body></html>'
     else:
