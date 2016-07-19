@@ -58,7 +58,7 @@ class CheckStyle(BaseTask):
             print "print init repo"
             os.system(clone)
         self.reset_repo()
-        pull = 'cd ' + self.get_repo_dir() + ' && git pull origin ' + self.params['branch']
+        pull = 'cd ' + self.get_repo_dir() + ' && git pull --no-edit origin ' + self.params['branch']
         os.system(pull)
 
 

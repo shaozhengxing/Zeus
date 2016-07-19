@@ -10,7 +10,7 @@ def index():
 
 @app.route('/api/webhook', methods=['POST', 'GET'])
 def webhook():
-    if (data_queue):
+    if (data_queue and request.data):
         data_queue.put({'type':'webhook', 'data':request.data})
     else:
         print data_queue
@@ -25,9 +25,9 @@ def get_diff(user, repo, branch, filename):
         diff_data = ''
         for line in f:
             if (line[0] == '-' or line[0] == '+'):
-                diff_data = diff_data + '<pre style="color:' + color[line[0]] + '">' + line + '</pre>'
+                diff_data = diff_data + '<pre style="color:' + color[line[0]] + '">' + line.replace(" ", '.') + '</pre>'
             else:
-                diff_data = diff_data + '<pre style="color:#aaa">' + line + '</pre>'
+                diff_data = diff_data + '<pre style="color:#aaa">' + line.replace(" ", '.') + '</pre>'
         f.close()
         return '<html><head><title>diff</title></head><body>' + diff_data + '</body></html>'
     else:
