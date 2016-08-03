@@ -19,7 +19,7 @@ class CheckStyle(BaseTask):
             self.change_status('success', '编码格式检查通过', None)
         else:
             print 'diff failure'
-            self.change_status('failure', '编码格式检查失败', 'http://hk.jswh.me/diff' + diff_file )
+            self.change_status('failure', '编码格式检查失败', 'http://us.jswh.me/diff' + diff_file )
 
 
     def change_status(self, status, description, link):
