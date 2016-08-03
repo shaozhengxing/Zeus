@@ -16,7 +16,7 @@ php代码风格检查工具,在接收到 github pull request 相关事件的时�
 * Payload Url: http://{domain}/api/webhook
 * Content type: application/json
 * Secret 留空即可
-* Send me everythind
+* Send me everything
 * 勾选Active
 
 # Tips
