@@ -2,7 +2,7 @@
 import requests;
 import json;
 
-token = 'ac538ed5f752ae6ea2ef09dd68264af8886f801d';
+token = '2e7da4e2aaea2a2df7c7a9a4cec322d0090f7fb5';
 host = 'https://api.github.com'
 
 def filter_data(data):
