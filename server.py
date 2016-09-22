@@ -11,7 +11,7 @@ data_queue = Queue()
 set_data_queue(data_queue)
 
 def run_web():
-    get_web_app().run(host='0.0.0.0', port=80, threaded=True)
+    get_web_app().run(host='0.0.0.0', port=1080, threaded=True)
 
 web_process = Process(target=run_web)
 web_process.start()
