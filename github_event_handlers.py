@@ -8,7 +8,7 @@ from multiprocessing import Process
 handler = events.EventHandler()
 
 factory = Factory()
-factory.regist_task('test', tasks.Test)
+# factory.regist_task('test', tasks.Test)
 factory.regist_task('check_style', tasks.CheckStyle)
 def get_handler():
     return handler
